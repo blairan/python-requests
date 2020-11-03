@@ -1,0 +1,39 @@
+import requests, os
+
+serchName=input("請輸入想搜尋的類別名稱: ")
+page=input("請輸入想下載頁數的範圍: ")
+savePath=r'D:\暫存\test'
+
+def downloadsImgs(imgUrl, savePath):
+    #檢查有無資料夾,沒有則建立資料夾
+    if not os.path.exists(savePath):
+        os.mkdir(savePath)
+
+    num=0
+    for j in imgUrl:
+        picUrl=j+'.jpg'
+        print(picUrl)
+        pics=requests.get(picUrl)
+        pics.raise_for_status()
+        print("%s遠端連線下載成功...."%pics)
+        #不使用os.path.basename截取圖片名是因為寫入時發生錯誤,所以改用編號
+        with open(os.path.join(savePath, str(num)+'.jpg'), 'wb') as f:
+            for d in pics.iter_content(10240):
+                f.write(d)
+        num+=1
+        f.close()
+    
+
+imgUrl=[]
+url=f'https://unsplash.com/napi/search/photos?query={serchName}&'+\
+    f'xp=feedback-loop-v2%3Acontrol&per_page=20&page={page+str(1)}'
+html=requests.get(url).json()['results']
+for i in html:
+    link=i['urls']['raw']
+    if link in imgUrl:
+        continue
+    else:
+        imgUrl.append(link)
+    #print(imgUrl)
+
+    downloadsImgs(imgUrl, savePath)
