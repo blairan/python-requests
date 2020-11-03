@@ -1,0 +1,34 @@
+import requests
+from bs4 import BeautifulSoup
+import os
+
+
+def DownloadsPics(pics, savepath):
+    image=requests.get(pics)
+    image.raise_for_status()
+    print("%s圖片下載成功....."%pics)
+    if not os.path.exists(savepath):
+        os.mkdir(savepath)
+    files=open(os.path.join(savepath, os.path.basename(pics)), 'wb')
+    for disk in image.iter_content(10240):
+        files.write(disk)
+    files.close()
+    
+
+
+savepath=r'D:\迅雷下载\picspath'
+
+for p in range(1, 3):
+    url='https://wallhaven.cc/search?q=china&page='+str(p)
+    html=requests.get(url)
+    bs=BeautifulSoup(html.text, 'lxml')
+    uls=bs.find_all('img')
+    
+    for img in uls:
+        pics=img.get('data-src')
+        if pics==None:
+            continue
+        else:
+                
+            DownloadsPics(pics, savepath)
+            print("圖片下載完成")
