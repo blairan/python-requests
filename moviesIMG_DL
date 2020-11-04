@@ -1,8 +1,8 @@
 import requests, os
 from bs4 import BeautifulSoup
+import time
 
-url='https://tieba.baidu.com/p/3108805355?pn=2'
-savepath=r'D:\暫存\test\movieImgs'
+
 def DownloadIMGS(imgsurl, savepath):
     i=0
     for j in imgsurl:
@@ -17,18 +17,20 @@ def DownloadIMGS(imgsurl, savepath):
                     files.write(d)
                 i+=1
                 files.close()
+        time.sleep(2)
         
-    
-
-html=requests.get(url)
-bs=BeautifulSoup(html.text, 'lxml')
-d_post=bs.find_all('img')
-imgsList=[]
-for img in d_post:
-    imgs=img['src']
-    if str(imgs).startswith('https://imgsa') and str(imgs).endswith('.jpg'):
-        imgsList.append(imgs)
-         
-    else:
-        pass
+for j in range(1, 4): 
+    url='https://tieba.baidu.com/p/3108805355?pn='+str(j)
+    html=requests.get(url)
+    bs=BeautifulSoup(html.text, 'lxml')
+    d_post=bs.find_all('img')
+    imgsList=[]
+    for img in d_post:
+        imgs=img['src']
+        if str(imgs).startswith('https://imgsa') and str(imgs).endswith('.jpg'):
+            imgsList.append(imgs)
+            
+        else:
+            pass
+savepath=r'D:\暫存\test\movieImgs'
 DownloadIMGS(imgsList ,savepath) 
