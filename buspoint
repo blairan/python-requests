@@ -1,0 +1,52 @@
+import urllib, gzip
+import json
+import urllib.request
+
+
+# url='https://tcgbusfs.blob.core.windows.net/blobyoubike/YouBikeTP.gz'
+# with urllib.request.urlopen(url) as resopne:
+#     with gzip.GzipFile(fileobj=resopne) as f:
+#         jdata=f.read()
+#         f.close()
+#         data=json.loads(jdata)
+
+# with open('bike.txt', 'w',newline='', encoding='utf-8') as w:
+#     for key, value in data['retVal'].items():
+#         sno=value['sno']
+#         sna=value['sna']
+#         mday=value['mday']
+#         sbi=value['sbi']
+#         print("NO."+sno+" "+sna+" "+mday+" "+sbi)
+#         data="NO."+sno+" "+sna+" "+mday+" "+sbi
+#         w.write(data+'\n')
+#     w.close()
+url='https://tcgbusfs.blob.core.windows.net/ntpcbus/GetStop.gz'
+with urllib.request.urlopen(url) as r:
+    with gzip.GzipFile(fileobj=r) as f:
+        jdata=f.read()
+        f.close()
+        data=json.loads(jdata)
+with open('buspoint.txt', 'w', encoding='utf-8') as t:
+    for v in data['BusInfo']:
+        id=v['Id']
+        name=v['nameZh']
+        add=v['address']#pgp 上下車站別 （-1：可下車、0：可上下車、1：可上車）
+                        #goBack 去返程 （0：去程 / 1：返程 / 2：未知）
+        goback=v['goBack']
+        pgp=v['pgp']
+        if pgp=='-1':
+            g=("可下車")
+        elif pgp=='0':
+            g="可上下車"
+        else:
+            g="可上車"
+        if goback=='0':
+            a='去程'
+        elif goback=='1':
+            a='返程'
+        else:
+            a='未知'
+        print("ID: "+str(id),name,add,a,g)
+        d="ID: ",id,name,add,a,g
+        t.write(str(d)+'\n')
+    t.close()
