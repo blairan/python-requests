@@ -2,6 +2,7 @@ import urllib, gzip
 import json
 import urllib.request
 
+# https://taipeicity.github.io/traffic_realtime/   目標網址
 
 # url='https://tcgbusfs.blob.core.windows.net/blobyoubike/YouBikeTP.gz'
 # with urllib.request.urlopen(url) as resopne:
